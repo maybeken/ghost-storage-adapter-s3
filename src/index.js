@@ -111,7 +111,7 @@ class Store extends BaseStore {
 
   serve () {
     return (req, res, next) => {
-      next();
+      next()
     }
   }
 
