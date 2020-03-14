@@ -110,40 +110,12 @@ class Store extends BaseStore {
   }
 
   serve () {
-    return (req, res, next) =>
-      this.s3()
-        .getObject({
-          Bucket: this.bucket,
-          Key: stripLeadingSlash(stripEndingSlash(this.pathPrefix) + req.path)
-        })
-        .on('httpHeaders', (statusCode, headers, response) => res.set(headers))
-        .createReadStream()
-        .on('error', err => {
-          res.status(404)
-          next(err)
-        })
-        .pipe(res)
+    return (req, res, next) => {
+      next();
+    }
   }
 
-  read (options) {
-    options = options || {}
-
-    return new Promise((resolve, reject) => {
-      // remove trailing slashes
-      let path = (options.path || '').replace(/\/$|\\$/, '')
-
-      // check if path is stored in s3 handled by us
-      if (!path.startsWith(this.host)) {
-        reject(new Error(`${path} is not stored in s3`))
-      }
-      path = path.substring(this.host.length)
-
-      this.s3()
-        .getObject({
-          Bucket: this.bucket,
-          Key: stripLeadingSlash(path)
-        }, (err, data) => err ? reject(err) : resolve(data.Body))
-    })
+  read () {
   }
 }
 
